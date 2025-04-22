@@ -6,11 +6,20 @@
         <div class="input-row">
           <label class="input-label">
             <span>С</span>
-            <input v-model="dateFrom" type="date" class="input-field"/>
+            <VueDatePicker v-model="dateFrom" locale="ru"
+                           class="input-field"
+                           :enable-time-picker="false"
+                           :clearable="false"
+                           :auto-apply="true"
+                           max-width="1px"/>
           </label>
           <label class="input-label">
             <span>По</span>
-            <input v-model="dateTo" type="date" class="input-field"/>
+            <VueDatePicker v-model="dateTo" locale="ru"
+                           class="input-field"
+                           :enable-time-picker="false"
+                           :clearable="false"
+                           :auto-apply="true"/>
           </label>
         </div>
         <button class="update-button" name="updateTable" @click="onClick">Обновить</button>
@@ -23,7 +32,10 @@
 </template>
 
 <script>
-import { useCounterStore } from '@/stores/store.js'
+import {useCounterStore} from '@/stores/store.js'
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
 export default {
   data() {
     return {
@@ -33,6 +45,7 @@ export default {
       counterStore: useCounterStore()
     };
   },
+  components: {VueDatePicker},
   async created() {
     await this.getDefaultDates();
   },
@@ -81,11 +94,7 @@ export default {
 
 .input-field {
   flex: auto;
-  padding: 0.5rem;
-  border: 1px solid lightgray;
-  font-size: 14px;
-  font-family: Arial, serif;
-  border-radius: 0.5rem;
+  max-width: 160px;
 }
 
 .update-button {
