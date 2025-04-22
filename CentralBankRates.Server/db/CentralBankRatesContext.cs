@@ -6,10 +6,6 @@ namespace CentralBankRates.Server.db;
 
 public partial class CentralBankRatesContext : DbContext
 {
-    public CentralBankRatesContext()
-    {
-    }
-
     public CentralBankRatesContext(DbContextOptions<CentralBankRatesContext> options)
         : base(options)
     {
@@ -18,10 +14,6 @@ public partial class CentralBankRatesContext : DbContext
     public virtual DbSet<CurrenciesCatalog> CurrenciesCatalogs { get; set; }
 
     public virtual DbSet<RateOnDate> RateOnDates { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-0SSEBUM;Database=central_bank_rates;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,7 +41,7 @@ public partial class CentralBankRatesContext : DbContext
             entity.Property(e => e.IsoNumCode).HasColumnName("iso_num_code");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
-                .IsUnicode(false)
+                .IsUnicode()
                 .HasColumnName("name");
             entity.Property(e => e.ParentCode)
                 .HasMaxLength(10)

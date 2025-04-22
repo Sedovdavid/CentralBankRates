@@ -1,5 +1,12 @@
+using CentralBankRates.Server.db; 
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<CentralBankRatesContext>(options =>
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
@@ -28,4 +35,12 @@ app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<CentralBankRatesContext>();
+    dbContext.Database.Migrate(); 
+}
+
 app.Run();
+
+ 

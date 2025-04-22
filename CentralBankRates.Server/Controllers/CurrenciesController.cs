@@ -12,8 +12,13 @@ namespace CentralBankRates.Server.Controllers
     [Route("api/[controller]")]
     public class CurrenciesController : ControllerBase
     {
-        private static readonly CentralBankRatesContext DbContext = new();
+        private static CentralBankRatesContext _dbContext = null!; 
 
+        public CurrenciesController(CentralBankRatesContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+        
         [HttpGet("GetCurrencies")]
         public async Task<IActionResult> GetCurrencies(string? dateFrom, string? dateTo) 
         {
@@ -105,14 +110,14 @@ namespace CentralBankRates.Server.Controllers
 
             //выбираются буферизированные данные
             var currenciesCatalog =
-                DbContext.CurrenciesCatalogs.Local.Where(
+                _dbContext.CurrenciesCatalogs.Local.Where(
                     onlyUsedCurrencies
                 ).ToList();
 
             if (currenciesCatalog.Count != 0) return currenciesCatalog;
 
             //если еще не были выбраны, из бд выбираются записи (id, описание) только для нужных валют
-            currenciesCatalog = DbContext.CurrenciesCatalogs.Where(
+            currenciesCatalog = _dbContext.CurrenciesCatalogs.Where(
                 onlyUsedCurrencies
             ).ToList();
 
@@ -123,10 +128,10 @@ namespace CentralBankRates.Server.Controllers
 
             var currenciesCatalogList = currenciesCatalogXml.XmlToEntity();
 
-            DbContext.CurrenciesCatalogs.AddRange(currenciesCatalogList);
-            await DbContext.SaveChangesAsync();
+            _dbContext.CurrenciesCatalogs.AddRange(currenciesCatalogList);
+            await _dbContext.SaveChangesAsync();
 
-            return currenciesCatalog;
+            return currenciesCatalogList.Where(onlyUsedCurrencies).ToList();
         }
 
         private static async Task<List<RateOnDate>> GetRateOnDate(string currencyId, DateOnly dateFrom, DateOnly dateTo)
@@ -136,7 +141,7 @@ namespace CentralBankRates.Server.Controllers
             //     x => x.CurrencyId == currencyId && x.Date >= dateFrom && x.Date <= dateTo;
 
             //выбираем из буфера
-            var ratesOnDate = DbContext.RateOnDates.Local.Where(
+            var ratesOnDate = _dbContext.RateOnDates.Local.Where(
                 x => x.CurrencyId == currencyId && x.Date >= dateFrom && x.Date <= dateTo
             ).ToList();
 
@@ -149,7 +154,7 @@ namespace CentralBankRates.Server.Controllers
             foreach (var missingDateRange in missingDateRanges)
             {
                 //то, что не найдено в буфере, выбираем из бд
-                var localRatesOnDate = DbContext.RateOnDates.Where(
+                var localRatesOnDate = _dbContext.RateOnDates.Where(
                     x => x.CurrencyId == currencyId
                          && x.Date >= missingDateRange.DateFrom
                          && x.Date <= missingDateRange.DateTo
@@ -194,12 +199,12 @@ namespace CentralBankRates.Server.Controllers
                 if (localRatesOnDate.Count == 0) continue;
                 
                 ratesOnDate.AddRange(localRatesOnDate);
-                DbContext.RateOnDates.AddRange(localRatesOnDate);
+                _dbContext.RateOnDates.AddRange(localRatesOnDate);
                 dbChanged = true;
             }
 
             if (dbChanged)
-                await DbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
 
             return ratesOnDate;
         }
