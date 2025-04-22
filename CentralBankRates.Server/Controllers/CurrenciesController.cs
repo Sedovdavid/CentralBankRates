@@ -15,7 +15,7 @@ namespace CentralBankRates.Server.Controllers
         private static readonly CentralBankRatesContext DbContext = new();
 
         [HttpGet("GetCurrencies")]
-        public async Task<IActionResult> GetCurrencies(string dateFrom, string dateTo)
+        public async Task<IActionResult> GetCurrencies(string? dateFrom, string? dateTo) 
         {
             DateOnly localDateFrom, localDateTo;
             try

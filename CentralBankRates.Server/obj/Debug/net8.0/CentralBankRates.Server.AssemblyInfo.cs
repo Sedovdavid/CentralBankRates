@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CentralBankRates.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+59027cb64d6a599b0363bbaf93dee351f3ad5c4a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+910f313d03b8f57080814e627ea0188518cb2fb2")]
 [assembly: System.Reflection.AssemblyProductAttribute("CentralBankRates.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CentralBankRates.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
