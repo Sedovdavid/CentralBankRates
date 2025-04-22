@@ -56,7 +56,7 @@ export default {
 <style scoped>
 .container {
   padding-block: 1em;
-  padding-inline: 4rem;
+  padding-inline: 5rem;
 }
 
 .input-label {
@@ -66,10 +66,11 @@ export default {
 }
 
 .input-card {
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   width: 100%;
-  padding: 1.5rem;
+  padding: 2rem;
   align-items: start;
+  border-radius: 1rem;
 }
 
 .input-row {
@@ -84,13 +85,16 @@ export default {
   border: 1px solid lightgray;
   font-size: 14px;
   font-family: Arial, serif;
+  border-radius: 0.5rem;
 }
 
 .update-button {
   border: 1px solid lightgray;
   margin-top: 1rem;
-  padding: 10px;
+  padding: 0.5rem;
   background: #fafafa;
+  border-radius: 0.5rem;
+  font-size: 14px;
 }
 
 .update-button:hover {

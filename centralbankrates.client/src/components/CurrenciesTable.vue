@@ -1,19 +1,21 @@
 <template>
   <div class="table-container">
     <div class="table-overlay" v-if="this.loading"/>
-    <table class="styled-table">
-      <thead>
-      <tr>
-        <th v-for="item in this.post.header">{{ item }}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="(row,index) in this.post.values">
-        <td>{{ row[0] }}</td>
-        <td v-for="(cur,index) in row.slice(1)">{{ cur }}</td>
-      </tr>
-      </tbody>
-    </table>
+    <div v-if="this.post">
+      <table class="styled-table">
+        <thead>
+        <tr>
+          <th v-for="item in this.post.header">{{ item }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(row,index) in this.post.values">
+          <td>{{ row[0] }}</td>
+          <td v-for="(cur,index) in row.slice(1)">{{ cur }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -60,12 +62,18 @@ export default {
 .table-container {
   padding: 1rem;
   position: relative;
+  background-color: white;
 }
 
 .styled-table {
   table-layout: auto;
   border-collapse: collapse;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-spacing: 0;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid;
+  background-color: lightgray;
 }
 
 .styled-table th,
@@ -82,6 +90,10 @@ export default {
 
 .styled-table td:nth-child(1) {
   background-color: #fafafa;
+}
+
+.styled-table tbody {
+  background-color: white;
 }
 
 /*

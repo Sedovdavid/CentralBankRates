@@ -6,7 +6,6 @@ import Filter from "@/components/Filter.vue";
 <template>
   <Filter/>
   <CurrenciesTable/>
-
 </template>
 
 <style>
