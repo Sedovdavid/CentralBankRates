@@ -14,8 +14,8 @@ namespace CentralBankRates.Server.Controllers
     {
         private static CentralBankRatesContext _dbContext = null!; 
         
-        private static List<CurrenciesCatalog> _currenciesCatalogBuffer = [];
-        private static List<RateOnDate> _rateOnDateBuffer = [];
+        private static readonly List<CurrenciesCatalog> CurrenciesCatalogBuffer = [];
+        private static readonly List<RateOnDate> RateOnDateBuffer = [];
 
         public CurrenciesController(CentralBankRatesContext dbContext)
         {
@@ -23,13 +23,14 @@ namespace CentralBankRates.Server.Controllers
         }
         
         [HttpGet("GetCurrencies")]
-        public async Task<IActionResult> GetCurrencies(string? dateFrom, string? dateTo) 
+        public async Task<IActionResult> GetCurrencies(string? dateFrom, string? dateTo)
         {
+            // var s = dateFrom.ToString("o");
             DateOnly localDateFrom, localDateTo;
             try
             {
-                localDateFrom = DateOnly.FromDateTime(DateTime.Parse(dateFrom));
-                localDateTo = DateOnly.FromDateTime(DateTime.Parse(dateTo));
+                localDateFrom = DateOnly.FromDateTime(DateTime.Parse(dateFrom!));
+                localDateTo = DateOnly.FromDateTime(DateTime.Parse(dateTo!));
             }
             catch (Exception)
             {
@@ -113,7 +114,7 @@ namespace CentralBankRates.Server.Controllers
 
             //выбираются буферизированные данные
             var currenciesCatalog =
-                _currenciesCatalogBuffer.Where(
+                CurrenciesCatalogBuffer.Where(
                     onlyUsedCurrencies
                 ).ToList();
 
@@ -126,7 +127,7 @@ namespace CentralBankRates.Server.Controllers
 
             if (currenciesCatalog.Count != 0)
             {
-                _currenciesCatalogBuffer.AddRange(currenciesCatalog);
+                CurrenciesCatalogBuffer.AddRange(currenciesCatalog);
                 return currenciesCatalog;
             }
 
@@ -138,7 +139,7 @@ namespace CentralBankRates.Server.Controllers
             _dbContext.CurrenciesCatalogs.AddRange(currenciesCatalogList);
             await _dbContext.SaveChangesAsync();
 
-            _currenciesCatalogBuffer.AddRange(currenciesCatalog);
+            CurrenciesCatalogBuffer.AddRange(currenciesCatalog);
             
             return currenciesCatalogList.Where(onlyUsedCurrencies).ToList();
         }
@@ -150,7 +151,7 @@ namespace CentralBankRates.Server.Controllers
             //     x => x.CurrencyId == currencyId && x.Date >= dateFrom && x.Date <= dateTo;
 
             //выбираем из буфера
-            var ratesOnDate = _rateOnDateBuffer.Where(
+            var ratesOnDate = RateOnDateBuffer.Where(
                 x => x.CurrencyId == currencyId && x.Date >= dateFrom && x.Date <= dateTo
             ).ToList();
 
@@ -172,7 +173,7 @@ namespace CentralBankRates.Server.Controllers
                 if (localRatesOnDate.Count != 0)
                 {
                     ratesOnDate.AddRange(localRatesOnDate);
-                    _rateOnDateBuffer.AddRange(localRatesOnDate);
+                    RateOnDateBuffer.AddRange(localRatesOnDate);
                     continue;
                 }
 
@@ -209,7 +210,7 @@ namespace CentralBankRates.Server.Controllers
                 if (localRatesOnDate.Count == 0) continue;
                 
                 ratesOnDate.AddRange(localRatesOnDate);
-                _rateOnDateBuffer.AddRange(localRatesOnDate);
+                RateOnDateBuffer.AddRange(localRatesOnDate);
                 _dbContext.RateOnDates.AddRange(localRatesOnDate);
                 dbChanged = true;
             }

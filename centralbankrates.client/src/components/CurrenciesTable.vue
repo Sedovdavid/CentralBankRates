@@ -9,9 +9,9 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(row,index) in this.post.values">
+        <tr v-for="(row) in this.post.values">
           <td>{{ row[0] }}</td>
-          <td v-for="(cur,index) in row.slice(1)">{{ cur }}</td>
+          <td v-for="(cur) in row.slice(1)">{{ cur }}</td>
         </tr>
         </tbody>
       </table>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {useCounterStore} from '@/stores/store.js'
+import {DatesStore} from '@/stores/store.js'
 
 export default {
   data() {
@@ -29,19 +29,19 @@ export default {
       loading: true,
       header: [],
       rows: [],
-      counterStore: useCounterStore()
+      datesStore: DatesStore()
     };
   },
   async created() {
     await this.fetchData()
-    this.counterStore.$subscribe(async (mutation, state) => {
+    this.datesStore.$subscribe(async () => {
       await this.fetchData();
     })
   },
   methods: {
     async fetchData() {
       this.loading = true;
-      var response = await fetch(`api/Currencies/GetCurrencies?dateFrom=${this.counterStore.dateFrom}&dateTo=${this.counterStore.dateTo}`);
+      const response = await fetch(`api/Currencies/GetCurrencies?dateFrom=${this.datesStore.dateFrom}&dateTo=${this.datesStore.dateTo}`);
       if (response.ok) {
         this.post = await response.json();
         this.loading = false;

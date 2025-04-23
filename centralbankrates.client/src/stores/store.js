@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 
-export const useCounterStore = defineStore('counter', {
+export const DatesStore = defineStore('counter', {
   state: () => ({
     dateFrom: null,
     dateTo: null

@@ -6,20 +6,15 @@
         <div class="input-row">
           <label class="input-label">
             <span>С</span>
-            <VueDatePicker v-model="dateFrom" locale="ru"
+            <VueDatePicker v-model="dateFrom"
                            class="input-field"
-                           :enable-time-picker="false"
-                           :clearable="false"
-                           :auto-apply="true"
-                           max-width="1px"/>
+                           v-bind="datePickerOptions"/>
           </label>
           <label class="input-label">
             <span>По</span>
-            <VueDatePicker v-model="dateTo" locale="ru"
+            <VueDatePicker v-model="dateTo"
                            class="input-field"
-                           :enable-time-picker="false"
-                           :clearable="false"
-                           :auto-apply="true"/>
+                           v-bind="datePickerOptions"/>
           </label>
         </div>
         <button class="update-button" name="updateTable" @click="onClick">Обновить</button>
@@ -32,17 +27,28 @@
 </template>
 
 <script>
-import {useCounterStore} from '@/stores/store.js'
+import {DatesStore} from '@/stores/store.js'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import {ru} from 'date-fns/locale';
 
 export default {
+
   data() {
     return {
       dateFrom: "",
       dateTo: "",
       loaded: false,
-      counterStore: useCounterStore()
+      datesStore: DatesStore(),
+
+      datePickerOptions: {
+        modelType: 'iso',
+        enableTimePicker: false,
+        clearable: false,
+        autoApply: true,
+        formatLocale: ru,
+        format: "dd.MM.yyyy"
+      }
     };
   },
   components: {VueDatePicker},
@@ -51,16 +57,16 @@ export default {
   },
   methods: {
     async getDefaultDates() {
-      var response = await fetch('api/Currencies/GetDefaultDates');
+      const response = await fetch('api/Currencies/GetDefaultDates');
       if (response.ok) {
         this.loaded = true;
-        var dates = await response.json();
+        const dates = await response.json();
         this.dateFrom = dates.dateFrom;
         this.dateTo = dates.dateTo;
       }
     },
     onClick() {
-      this.counterStore.setDates(this.dateFrom, this.dateTo);
+      this.datesStore.setDates(this.dateFrom, this.dateTo);
     }
   }
 };
